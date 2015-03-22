@@ -45,7 +45,10 @@ evalBExpr :: Scope -> BExpr -> Bool
 evalBExpr scope (BoolConst val) = val
 evalBExpr scope (Not expr) = not $ evalBExpr scope expr
 evalBExpr scope (BVar var) =
-    let (IBool x) = getVariable scope var in x
+    case getVariable scope var of
+        IBool x -> x
+        IUndef  -> error $ "Variable " ++ var ++ " undefined"
+        _       -> error $ "Variable " ++ var ++ " is not of type Bool"
 evalBExpr scope (BBinary op exp1 exp2) =
     case op of
         And -> evalBExpr scope exp1 && evalBExpr scope exp2
@@ -59,7 +62,10 @@ evalBExpr scope (RBinary op exp1 exp2) =
 evalSExpr :: Scope -> SExpr -> String
 evalSExpr scope (StringConst val) = val
 evalSExpr scope (SVar var) =
-    let (IString x) = getVariable scope var in x
+    case getVariable scope var of
+        IString x -> x
+        IUndef    -> error $ "Variable " ++ var ++ " undefined"
+        _         -> error $ "Variable " ++ var ++ " is not of type String"
 evalSExpr scope (Concat exp1 exp2) = 
     evalSExpr scope exp1 ++ evalSExpr scope exp2
 
