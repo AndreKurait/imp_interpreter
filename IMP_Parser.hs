@@ -2,6 +2,7 @@ module IMP_Parser where
 
 import IMP_Lexer
 
+import Control.Applicative ((<*))
 import Control.Monad
 import Text.Parsec
 import Text.Parsec.String
@@ -74,7 +75,7 @@ statement' =  ifStmt
 
 chainStatements :: Parser Stmt
 chainStatements = do
-        list <- sepBy1 statement' semi
+        list <- sepEndBy1 statement' semi
         return $ if length list == 1 then head list else Chain list
 
 ifStmt :: Parser Stmt
@@ -117,11 +118,14 @@ printStmt = do
         value <- parens anyExpr
         return $ Print value
 
+blockEnd :: Parser String
+blockEnd = semi <|> (whiteSpace >> string ")")
+
 anyExpr :: Parser Expr
-anyExpr =  liftM VarExpr identifier
-       <|> try (liftM IntExpr    aExpr) 
-       <|> try (liftM BoolExpr   bExpr)
-       <|> try (liftM StringExpr sExpr)
+anyExpr =  try (liftM VarExpr (identifier <* lookAhead blockEnd))
+       <|> try (liftM StringExpr sExpr    <* lookAhead blockEnd)
+       <|> try (liftM IntExpr    aExpr    <* lookAhead blockEnd) 
+       <|> try (liftM BoolExpr   bExpr    <* lookAhead blockEnd)
 
 bExpr :: Parser BExpr
 bExpr = buildExpressionParser bOperators bTerm

@@ -1,0 +1,9 @@
+var s;
+s := "ivan" ++ " " ++ "mandura";
+var cnt;
+cnt := 3;
+while cnt > 0 do (
+    s := s ++ " " ++ s;
+    cnt := cnt - 1;
+);
+print (s);
