@@ -34,6 +34,7 @@ languageDef =
                                        , "<"
                                        , ">"
                                        , "="
+                                       , "++"
                                        , "and"
                                        , "or"
                                        , "not"
@@ -42,11 +43,12 @@ languageDef =
 
 lexer = Token.makeTokenParser languageDef
 
-identifier = Token.identifier lexer
-reserved   = Token.reserved   lexer
-reservedOp = Token.reservedOp lexer
-parens     = Token.parens     lexer
-integer    = Token.integer    lexer
-semi       = Token.semi       lexer
-comma      = Token.comma      lexer
-whiteSpace = Token.whiteSpace lexer
+identifier    = Token.identifier    lexer
+reserved      = Token.reserved      lexer
+reservedOp    = Token.reservedOp    lexer
+parens        = Token.parens        lexer
+integer       = Token.integer       lexer
+semi          = Token.semi          lexer
+comma         = Token.comma         lexer
+whiteSpace    = Token.whiteSpace    lexer
+stringLiteral = Token.stringLiteral lexer

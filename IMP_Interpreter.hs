@@ -20,13 +20,20 @@ instance Show IType where
 
 type Scope  = M.Map String IType
 
+getVariable :: Scope -> String -> IType
+getVariable scope var =
+    case M.lookup var scope of
+         Just x -> x
+         Nothing -> error $ "Variable " ++ var ++ " is not in scope"
+
 evalAExpr :: Scope -> AExpr -> Integer
 evalAExpr scope (IntConst val) = val
 evalAExpr scope (Neg expr) = negate $ evalAExpr scope expr
 evalAExpr scope (IVar var) = 
-    case M.lookup var scope of
-         Just (IInt x) -> x
-         Nothing -> error $ "Variable " ++ var ++ " is not in scope"
+    case getVariable scope var of
+        IInt x -> x
+        IUndef -> error $ "Variable " ++ var ++ " undefined"
+        _      -> error $ "Variable " ++ var ++ " is not of type Int"
 evalAExpr scope (ABinary op exp1 exp2) =
     case op of
         Addition       -> evalAExpr scope exp1 + evalAExpr scope exp2
@@ -38,9 +45,7 @@ evalBExpr :: Scope -> BExpr -> Bool
 evalBExpr scope (BoolConst val) = val
 evalBExpr scope (Not expr) = not $ evalBExpr scope expr
 evalBExpr scope (BVar var) =
-    case M.lookup var scope of
-        Just (IBool val) -> val
-        Nothing -> error $ "Variable " ++ var ++ " is not in scope"
+    let (IBool x) = getVariable scope var in x
 evalBExpr scope (BBinary op exp1 exp2) =
     case op of
         And -> evalBExpr scope exp1 && evalBExpr scope exp2
@@ -51,11 +56,20 @@ evalBExpr scope (RBinary op exp1 exp2) =
         Greater -> evalAExpr scope exp1 >  evalAExpr scope exp2
         Equal   -> evalAExpr scope exp1 == evalAExpr scope exp2
 
+evalSExpr :: Scope -> SExpr -> String
+evalSExpr scope (StringConst val) = val
+evalSExpr scope (SVar var) =
+    let (IString x) = getVariable scope var in x
+evalSExpr scope (Concat exp1 exp2) = 
+    evalSExpr scope exp1 ++ evalSExpr scope exp2
+
 evalExpr :: Scope -> Expr -> IType
 evalExpr scope expr =
     case expr of
-        IntExpr  expr -> IInt $ evalAExpr scope expr
-        BoolExpr expr -> IBool $ evalBExpr scope expr
+        IntExpr    expr -> IInt    $ evalAExpr scope expr
+        BoolExpr   expr -> IBool   $ evalBExpr scope expr
+        StringExpr expr -> IString $ evalSExpr scope expr
+        VarExpr    var  -> getVariable scope var
 
 eval :: Stmt -> StateT Scope IO ()
 eval Skip = return ()

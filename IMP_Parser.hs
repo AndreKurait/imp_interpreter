@@ -37,8 +37,15 @@ data BExpr = BoolConst Bool
            | RBinary RBinOp AExpr AExpr
            deriving (Show)
 
-data Expr = IntExpr AExpr 
-          | BoolExpr BExpr
+data SExpr = StringConst String
+           | SVar String
+           | Concat SExpr SExpr
+           deriving (Show)
+
+data Expr = IntExpr    AExpr 
+          | BoolExpr   BExpr
+          | StringExpr SExpr
+          | VarExpr    String
           deriving (Show)
 
 data Stmt = Skip
@@ -111,13 +118,19 @@ printStmt = do
         return $ Print value
 
 anyExpr :: Parser Expr
-anyExpr = try (liftM IntExpr aExpr) <|> (liftM BoolExpr bExpr)
+anyExpr =  liftM VarExpr identifier
+       <|> try (liftM IntExpr    aExpr) 
+       <|> try (liftM BoolExpr   bExpr)
+       <|> try (liftM StringExpr sExpr)
 
 bExpr :: Parser BExpr
 bExpr = buildExpressionParser bOperators bTerm
 
 aExpr :: Parser AExpr
 aExpr = buildExpressionParser aOperators aTerm
+
+sExpr :: Parser SExpr
+sExpr = buildExpressionParser sOperators sTerm
 
 rExpr :: Parser BExpr
 rExpr = do
@@ -143,8 +156,15 @@ bOperators = [ [ Prefix (reservedOp "not" >> return Not) ]
              , [ Infix  (reservedOp "or" >> return (BBinary Or)) AssocLeft ]
              ]
 
+sOperators = [ [ Infix (reservedOp "++" >> return Concat) AssocLeft ]
+             ]
+
+
 aTerm :: Parser AExpr
 aTerm = parens aExpr <|> liftM IVar identifier <|> liftM IntConst integer
+
+sTerm :: Parser SExpr
+sTerm = parens sExpr <|> liftM SVar identifier <|> liftM StringConst stringLiteral
 
 bTerm :: Parser BExpr
 bTerm =   parens bExpr 
