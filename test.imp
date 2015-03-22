@@ -1,11 +1,11 @@
-var kurac, picka, sisa;
-sisa := 0;
-kurac := 1 + 1 + 2 * (-2 + 10);
-picka := true and (true or false);
-while picka and (kurac > -10) do ( 
-        kurac := kurac - 1;
-        if kurac < 0
-            then picka := false
-            else sisa := sisa + 1
+var a, b, c;
+c := 0;
+a := 1 + 1 + 2 * (-2 + 10);
+b := true and (true or false);
+while b and (a > -10) do ( 
+        a := a - 1;
+        if a < 0
+            then b := false
+            else c := c + 1
 );
-print (sisa)
+print (c)
