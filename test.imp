@@ -5,7 +5,7 @@ b := true and (true or false);
 while b and (a > -10) do ( 
         a := a - 1;
         if a < 0
-            then b := false
-            else c := c + 1
+            then b := false;
+            else c := c + 1;
 );
 print (c)
