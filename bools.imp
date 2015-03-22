@@ -1,0 +1,10 @@
+var a, b;
+a := true;
+b := 23;
+while a do (
+        if b * 2 > 100
+            then a := false
+            else b := b + 10
+);
+print (b)
+

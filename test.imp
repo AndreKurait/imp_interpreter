@@ -8,4 +8,4 @@ while picka and (kurac > -10) do (
             then picka := false
             else sisa := sisa + 1
 );
-print sisa
+print (sisa)
