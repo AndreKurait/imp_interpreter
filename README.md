@@ -1,7 +1,7 @@
 # imp_interpreter
 Interpreter for enhanced version of IMP (Simple Imperative language).
 
-I have enhansed it with few more operators like subtraction, multiplicatoin etc. Also boolean is just as valid type as integer. I have introduced print statement as well.
+I have enhansed it with few more operators like subtraction, multiplicatoin etc. IMP has only one type which is Int, but I added Boolean and Strings. I have introduced print statement as well.
 
 Examples of valid programs are in *.imp files
 
