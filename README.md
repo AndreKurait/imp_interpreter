@@ -9,4 +9,4 @@ Link to the language description: http://fsl.cs.illinois.edu/images/0/0d/CS522-S
 
 Code compiles with `ghc --make IMP_Interpreter.hs` and starts with `./IMP_Interpreter test.imp`
 
-TODO: Introduce strings, lists and functions
+TODO: Introduce input, lists and functions
